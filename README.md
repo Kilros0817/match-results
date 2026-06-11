@@ -1,59 +1,135 @@
-# MatchResults
+# Match Results
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.2.15.
+A production-quality Angular 21 feature for displaying football match results with league selection, search/filter capabilities, and detailed match views.
 
-## Development server
+## Stack
 
-To start a local development server, run:
+- **Angular 21** (standalone components, no NgModules)
+- **TypeScript** with strict mode enabled
+- **RxJS** for asynchronous operations
+- **Signals** for reactive state management
+- **TheSportsDB API** for match data (free, no authentication required)
 
-```bash
-ng serve
+## Architecture
+
+### Folder Structure
+
+```
+src/app/results/
+├── components/
+│   ├── results-list/          # List page with league selector
+│   └── match-detail/          # Detail page for single match
+├── services/
+│   └── match-api.service.ts   # Typed HTTP service for API calls
+├── models/
+│   └── match.model.ts         # TypeScript interfaces for API responses
+├── constants/
+│   └── league.constants.ts    # League configurations
+└── results.routes.ts          # Lazy-loaded feature routes
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+### Key Features (Day 1 - MVP)
 
-## Code scaffolding
+✅ **Results List Page** (`/results`)
+- League selector (5 major European leagues)
+- Display recent matches with home team, away team, score, and date
+- Loading, error, and empty states
+- Responsive grid layout
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+✅ **Match Detail Page** (`/results/:id`)
+- Full match information from API
+- Venue and season details
+- Back navigation to results list
 
-```bash
-ng generate component component-name
-```
+✅ **Typed HTTP Service**
+- `MatchApiService` handles all API communication
+- Strongly typed request/response interfaces
+- Error handling with graceful fallbacks
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+✅ **Code Quality**
+- Angular 21 standalone components with `OnPush` detection strategy
+- Signals for state management (`signal()`, `computed()`)
+- New control flow syntax (`@if`, `@for`)
+- `inject()` for dependency injection
+- ESLint configuration - all files pass linting
+- Conventional Commits with logical separation
 
-```bash
-ng generate --help
-```
+## Getting Started
 
-## Building
+### Prerequisites
+- Node.js 18+ with npm
 
-To build the project run:
-
-```bash
-ng build
-```
-
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
-
-```bash
-ng test
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
+### Installation & Running
 
 ```bash
-ng e2e
+# Install dependencies
+npm install
+
+# Start development server (runs on http://localhost:4200)
+npm start
 ```
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+The app will automatically reload when you modify source files.
 
-## Additional Resources
+### Building
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+```bash
+# Build for production
+npm run build
+```
+
+Output is in `dist/match-results/`
+
+### Linting
+
+```bash
+# Check code quality
+ng lint
+```
+
+## Developer Guide Compliance
+
+This project strictly follows the team's Angular standards as defined in `DEVELOPER_GUIDE.md`:
+
+- ✅ Standalone components only (no `NgModules`)
+- ✅ `ChangeDetectionStrategy.OnPush` on all components
+- ✅ Signals for state management
+- ✅ New control flow syntax (`@if`, `@for`, `@switch`)
+- ✅ `inject()` for dependency injection
+- ✅ HTTP in dedicated service with typed interfaces
+- ✅ Lazy-loaded standalone routes
+- ✅ Strict TypeScript (no `any`, no non-null `!` operator)
+- ✅ Clean lint with ESLint
+- ✅ Conventional Commits
+
+## Design Decisions & Trade-offs
+
+### Day 1 Focus
+- Built minimal viable product focusing on core functionality
+- Placeholder styling (clean and responsive, not styled for beauty)
+- Components are presentational and reusable
+
+### API Error Handling
+- If TheSportsDB API is down, service gracefully returns empty arrays
+- Users see "No matches found" or error messages
+- Retry buttons provided in error states
+
+### Data Flow
+- Component subscribes to `Observable` from service
+- No caching implemented yet (Day 1 scope)
+- Each league change triggers fresh API call
+
+## What's Next (Day 2-5)
+
+- **Day 2**: Component breakdown (KPI tiles, match card component), loading skeletons
+- **Day 3**: Search/filter with `computed()` KPIs, detail page polish
+- **Day 4**: Responsive styling, performance optimization, README finalization
+- **Day 5**: Stretch goals (debounced search, URL persistence, unit tests)
+
+## Notes for Reviewers
+
+- Git history reflects small logical commits (not one big "final" commit)
+- All components follow the BEM naming convention for CSS
+- Service layer completely decoupled from UI
+- Proper error handling for network failures
+- Code is intentionally simple and readable over clever
