@@ -1,0 +1,66 @@
+<main class="match-detail">
+  <!-- Back Link -->
+  <div class="match-detail__header">
+    <a routerLink="/results" class="match-detail__back-btn">← Back to Results</a>
+  </div>
+
+  <!-- Loading State -->
+  @if (isLoading()) {
+    <div class="match-detail__loading">
+      <p>Loading match details...</p>
+    </div>
+  }
+
+  <!-- Error State -->
+  @if (loadError() && !isLoading()) {
+    <div class="match-detail__error">
+      <p>{{ loadError() }}</p>
+    </div>
+  }
+
+  <!-- Match Details -->
+  @if (!isLoading() && match()) {
+    <div class="match-detail__content">
+      <div class="match-info">
+        <h1 class="match-info__title">{{ match()!.strLeague }}</h1>
+
+        <div class="match-info__date">
+          {{ formatDate(match()!.strDate) }}
+        </div>
+
+        <div class="match-info__matchup">
+          <div class="team">
+            <h2 class="team__name">{{ match()!.strHomeTeam }}</h2>
+          </div>
+
+          <div class="score">
+            <p class="score__value">{{ getScore(match()!) }}</p>
+          </div>
+
+          <div class="team">
+            <h2 class="team__name">{{ match()!.strAwayTeam }}</h2>
+          </div>
+        </div>
+
+        @if (match()!.strVenue) {
+          <div class="match-info__venue">
+            <strong>Venue:</strong> {{ match()!.strVenue }}
+          </div>
+        }
+
+        @if (match()!.strSeason) {
+          <div class="match-info__season">
+            <strong>Season:</strong> {{ match()!.strSeason }}
+          </div>
+        }
+
+        @if (match()!.strDescriptionEN) {
+          <div class="match-info__description">
+            <strong>Description:</strong>
+            <p>{{ match()!.strDescriptionEN }}</p>
+          </div>
+        }
+      </div>
+    </div>
+  }
+</main>

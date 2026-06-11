@@ -1,0 +1,75 @@
+<main class="results-list">
+  <!-- League Selector -->
+  <div class="results-list__header">
+    <h1 class="results-list__title">Match Results</h1>
+    <div class="results-list__league-selector">
+      @for (league of leagues(); track league.id) {
+        <button
+          class="results-list__league-btn"
+          [class.results-list__league-btn--active]="selectedLeague().id === league.id"
+          (click)="onLeagueChange(league)"
+          [attr.aria-label]="'Select ' + league.name"
+        >
+          {{ league.name }}
+        </button>
+      }
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  @if (isLoading()) {
+    <div class="results-list__loading">
+      <p>Loading matches...</p>
+    </div>
+  }
+
+  <!-- Error State -->
+  @if (loadError() && !isLoading()) {
+    <div class="results-list__error">
+      <p>{{ loadError() }}</p>
+      <button class="results-list__retry-btn" (click)="loadMatches()">
+        Retry
+      </button>
+    </div>
+  }
+
+  <!-- Empty State -->
+  @if (!isLoading() && !loadError() && matches().length === 0) {
+    <div class="results-list__empty">
+      <p>No matches found for {{ selectedLeague().name }}</p>
+    </div>
+  }
+
+  <!-- Matches List -->
+  @if (!isLoading() && matches().length > 0) {
+    <div class="results-list__content">
+      @for (match of matches(); track match.idEvent) {
+        <a [routerLink]="['/results', match.idEvent]" class="results-list__match-card">
+          <div class="match-card">
+            <div class="match-card__date">
+              {{ formatDate(match.strDate) }}
+            </div>
+
+            <div class="match-card__teams">
+              <div class="match-card__team match-card__team--home">
+                <span class="match-card__team-name">{{ match.strHomeTeam }}</span>
+              </div>
+
+              <div class="match-card__score">
+                {{ getScore(match) }}
+              </div>
+
+              <div class="match-card__team match-card__team--away">
+                <span class="match-card__team-name">{{ match.strAwayTeam }}</span>
+              </div>
+            </div>
+
+            <div class="match-card__time">
+              {{ formatTime(match.strTime) }}
+            </div>
+          </div>
+        </a>
+      }
+    </div>
+  }
+</main>
