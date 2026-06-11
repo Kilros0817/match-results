@@ -4,7 +4,6 @@ import { Match } from '../../models/match.model';
 
 const TEAM_FALLBACK_LOGO = '/assets/logos/team-fallback.svg';
 const LEAGUE_FALLBACK_LOGO = '/assets/logos/league-fallback.svg';
-const GERMANY_FLAG = '/assets/logos/germany-flag.svg';
 
 @Component({
   selector: 'app-match-card',
@@ -30,7 +29,6 @@ export class MatchCardComponent {
   readonly homeLogo = computed(() => this.match().strHomeTeamBadge ?? TEAM_FALLBACK_LOGO);
   readonly awayLogo = computed(() => this.match().strAwayTeamBadge ?? TEAM_FALLBACK_LOGO);
   readonly leagueLogo = computed(() => this.match().strLeagueBadge ?? LEAGUE_FALLBACK_LOGO);
-  readonly countryFlag = computed(() => (this.match().strCountry === 'Germany' ? GERMANY_FLAG : null));
 
   readonly displayTime = computed(() => {
     const match = this.match();

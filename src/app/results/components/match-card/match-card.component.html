@@ -21,12 +21,9 @@
   </div>
 
   <footer class="match-card__meta">
-    @if (countryFlag(); as flagUrl) {
-      <img class="match-card__flag" [src]="flagUrl" alt="Country flag" />
-    }
+    <img class="match-card__league-logo" [src]="leagueLogo()" [alt]="match().strLeague + ' logo'" />
     <span>{{ match().strLeague }}</span>
     <span aria-hidden="true">•</span>
     <span>{{ displayTime() }}</span>
-    <img class="match-card__league-logo" [src]="leagueLogo()" [alt]="match().strLeague + ' logo'" />
   </footer>
 </a>

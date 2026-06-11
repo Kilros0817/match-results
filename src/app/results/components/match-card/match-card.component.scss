@@ -90,20 +90,12 @@
   font-size: 17px;
 }
 
-.match-card__flag {
-  width: 24px;
-  height: 16px;
-  border-radius: 2px;
-  object-fit: cover;
-}
+
 
 .match-card__league-logo {
-  position: absolute;
-  right: 0;
-  bottom: -4px;
-  width: 54px;
-  height: 54px;
-  object-fit: contain;
+  width: 48px;
+  border-radius: 2px;
+  object-fit: cover;
 }
 
 @media (max-width: 760px) {

@@ -3,16 +3,17 @@
  * Displays detailed information for a single match
  */
 
-import { ChangeDetectionStrategy, Component, OnInit, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, computed, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { MatchApiService } from '../../services/match-api.service';
+import { MatchCardComponent } from '../match-card/match-card.component';
 import { Match } from '../../models/match.model';
 
 @Component({
   selector: 'app-match-detail',
   standalone: true,
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule, RouterLink, MatchCardComponent],
   templateUrl: './match-detail.component.html',
   styleUrl: './match-detail.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -24,6 +25,8 @@ export class MatchDetailComponent implements OnInit {
   readonly match = signal<Match | null>(null);
   readonly isLoading = signal(false);
   readonly loadError = signal<string | null>(null);
+
+  readonly displayMatch = computed(() => this.match());
 
   ngOnInit(): void {
     const id = this.activatedRoute.snapshot.paramMap.get('id');
@@ -51,25 +54,5 @@ export class MatchDetailComponent implements OnInit {
         this.isLoading.set(false);
       },
     });
-  }
-
-  formatDate(dateStr: string): string {
-    try {
-      const date = new Date(dateStr);
-      return date.toLocaleDateString('en-US', {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric',
-      });
-    } catch {
-      return dateStr;
-    }
-  }
-
-  getScore(match: Match): string {
-    if (match.intHomeScore === null || match.intAwayScore === null) {
-      return '--:--';
-    }
-    return `${match.intHomeScore}:${match.intAwayScore}`;
   }
 }
