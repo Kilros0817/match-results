@@ -1,0 +1,12 @@
+<div class="league-selector" aria-label="League selector">
+  @for (league of leagues(); track league.id) {
+    <button
+      type="button"
+      class="league-selector__button"
+      [class.league-selector__button--active]="selectedLeagueId() === league.id"
+      (click)="leagueSelected.emit(league)"
+    >
+      {{ league.name }}
+    </button>
+  }
+</div>

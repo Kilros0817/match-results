@@ -1,0 +1,7 @@
+<section class="state-message">
+  <h2>{{ title() }}</h2>
+  <p>{{ message() }}</p>
+  @if (actionLabel()) {
+    <button type="button" (click)="actionClicked.emit()">{{ actionLabel() }}</button>
+  }
+</section>

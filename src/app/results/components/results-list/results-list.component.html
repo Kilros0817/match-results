@@ -1,75 +1,52 @@
-<main class="results-list">
-  <!-- League Selector -->
-  <div class="results-list__header">
-    <h1 class="results-list__title">Match Results</h1>
-    <div class="results-list__league-selector">
-      @for (league of leagues(); track league.id) {
-        <button
-          class="results-list__league-btn"
-          [class.results-list__league-btn--active]="selectedLeague().id === league.id"
-          (click)="onLeagueChange(league)"
-          [attr.aria-label]="'Select ' + league.name"
-        >
-          {{ league.name }}
-        </button>
-      }
-    </div>
-  </div>
+<main class="results-page">
+  <section class="results-hero" aria-labelledby="results-title">
+    <p class="results-hero__eyebrow">Football Dashboard</p>
+    <h1 id="results-title">Match Results</h1>
+    <p class="results-hero__copy">
+      Recent results for {{ selectedLeague().name }}<br />
+      from TheSportsDB.
+    </p>
+  </section>
 
-  <!-- Loading State -->
+  <app-league-selector
+    [leagues]="leagues()"
+    [selectedLeagueId]="selectedLeague().id"
+    (leagueSelected)="onLeagueChange($event)"
+  />
+
+  <app-search-box [value]="searchTerm()" (valueChanged)="onSearchChange($event)" />
+
+  <section class="results-page__kpis" aria-label="Match result metrics">
+    <app-kpi-tile label="Total matches" [value]="totalMatches()" icon="pitch" />
+    <app-kpi-tile label="Total goals" [value]="totalGoals()" icon="ball" />
+    <app-kpi-tile label="Average goals(per match)" [value]="averageGoals()" icon="chart" />
+  </section>
+
   @if (isLoading()) {
-    <div class="results-list__loading">
-      <p>Loading matches...</p>
-    </div>
-  }
-
-  <!-- Error State -->
-  @if (loadError() && !isLoading()) {
-    <div class="results-list__error">
-      <p>{{ loadError() }}</p>
-      <button class="results-list__retry-btn" (click)="loadMatches()">
-        Retry
-      </button>
-    </div>
-  }
-
-  <!-- Empty State -->
-  @if (!isLoading() && !loadError() && matches().length === 0) {
-    <div class="results-list__empty">
-      <p>No matches found for {{ selectedLeague().name }}</p>
-    </div>
-  }
-
-  <!-- Matches List -->
-  @if (!isLoading() && matches().length > 0) {
-    <div class="results-list__content">
-      @for (match of matches(); track match.idEvent) {
-        <a [routerLink]="['/results', match.idEvent]" class="results-list__match-card">
-          <div class="match-card">
-            <div class="match-card__date">
-              {{ formatDate(match.dateEvent) }}
-            </div>
-
-            <div class="match-card__teams">
-              <div class="match-card__team match-card__team--home">
-                <span class="match-card__team-name">{{ match.strHomeTeam }}</span>
-              </div>
-
-              <div class="match-card__score">
-                {{ getScore(match) }}
-              </div>
-
-              <div class="match-card__team match-card__team--away">
-                <span class="match-card__team-name">{{ match.strAwayTeam }}</span>
-              </div>
-            </div>
-
-            <div class="match-card__time">
-              {{ formatTime(match.strTime) }}
-            </div>
-          </div>
-        </a>
+    <app-state-message kind="loading" title="Loading matches" message="Fetching the latest match results..." />
+  } @else if (loadError()) {
+    <app-state-message
+      kind="error"
+      title="Could not load matches"
+      [message]="loadError() ?? 'Unknown error'"
+      actionLabel="Retry"
+      (actionClicked)="retryLoad()"
+    />
+  } @else if (filteredMatches().length === 0) {
+    <app-state-message
+      kind="empty"
+      title="No matches found"
+      [message]="'No matches match your current search for ' + selectedLeague().name + '.'"
+    />
+  } @else {
+    <section class="results-page__matches" aria-label="Recent matches">
+      @for (match of filteredMatches(); track match.idEvent) {
+        <app-match-card [match]="match" />
       }
-    </div>
+    </section>
   }
+
+  <footer class="results-page__footer">
+    Data provided by <span>TheSportsDB</span>
+  </footer>
 </main>

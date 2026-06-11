@@ -1,96 +1,117 @@
 /**
  * Results List Page Component
- * Displays a list of recent match results with league selector
+ * Displays recent match results with league filtering, search, KPIs, and result states.
  */
 
-import { ChangeDetectionStrategy, Component, OnInit, inject, signal } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { RouterLink } from '@angular/router';
+import { ChangeDetectionStrategy, Component, DestroyRef, computed, effect, inject, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatchApiService } from '../../services/match-api.service';
-import { Match, League } from '../../models/match.model';
-import { LEAGUES, DEFAULT_LEAGUE } from '../../constants/league.constants';
+import { League, Match } from '../../models/match.model';
+import { DEFAULT_LEAGUE, LEAGUES } from '../../constants/league.constants';
+import { KpiTileComponent } from '../kpi-tile/kpi-tile.component';
+import { LeagueSelectorComponent } from '../league-selector/league-selector.component';
+import { MatchCardComponent } from '../match-card/match-card.component';
+import { SearchBoxComponent } from '../search-box/search-box.component';
+import { StateMessageComponent } from '../state-message/state-message.component';
 
 @Component({
   selector: 'app-results-list',
   standalone: true,
-  imports: [CommonModule, RouterLink],
+  imports: [
+    KpiTileComponent,
+    LeagueSelectorComponent,
+    MatchCardComponent,
+    SearchBoxComponent,
+    StateMessageComponent,
+  ],
   templateUrl: './results-list.component.html',
   styleUrl: './results-list.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ResultsListComponent implements OnInit {
-  // Dependency injection
+export class ResultsListComponent {
   private readonly matchApiService = inject(MatchApiService);
+  private readonly destroyRef = inject(DestroyRef);
 
-  // State signals
   readonly leagues = signal<League[]>(LEAGUES);
   readonly selectedLeague = signal<League>(DEFAULT_LEAGUE);
+  readonly searchTerm = signal('');
   readonly matches = signal<Match[]>([]);
   readonly isLoading = signal(false);
   readonly loadError = signal<string | null>(null);
 
-  ngOnInit(): void {
-    this.loadMatches();
-  }
+  readonly filteredMatches = computed(() => {
+    const term = this.searchTerm().trim().toLowerCase();
 
-  /**
-   * Handle league selection change
-   */
-  onLeagueChange(league: League): void {
-    this.selectedLeague.set(league);
-    this.loadMatches();
-  }
+    if (!term) {
+      return this.matches();
+    }
 
-  /**
-   * Load matches for the selected league
-   */
-  loadMatches(): void {
-    this.isLoading.set(true);
-    this.loadError.set(null);
+    return this.matches().filter((match) => {
+      const homeTeam = match.strHomeTeam.toLowerCase();
+      const awayTeam = match.strAwayTeam.toLowerCase();
 
-    this.matchApiService.getRecentMatches$(this.selectedLeague().id).subscribe({
-      next: (matches) => {
-        this.matches.set(matches);
-        this.isLoading.set(false);
-      },
-      error: (error) => {
-        console.error('Error loading matches:', error);
-        this.loadError.set('Failed to load matches. Please try again.');
-        this.isLoading.set(false);
-      },
+      return homeTeam.includes(term) || awayTeam.includes(term);
+    });
+  });
+
+  readonly totalMatches = computed(() => this.filteredMatches().length);
+
+  readonly totalGoals = computed(() =>
+    this.filteredMatches().reduce((sum, match) => {
+      const homeGoals = Number(match.intHomeScore ?? 0);
+      const awayGoals = Number(match.intAwayScore ?? 0);
+
+      return sum + homeGoals + awayGoals;
+    }, 0),
+  );
+
+  readonly averageGoals = computed(() => {
+    const matchCount = this.totalMatches();
+
+    if (matchCount === 0) {
+      return '0.0';
+    }
+
+    return (this.totalGoals() / matchCount).toFixed(1);
+  });
+
+  constructor() {
+    effect(() => {
+      const leagueId = this.selectedLeague().id;
+      this.loadMatches(leagueId);
     });
   }
 
-  /**
-   * Format date for display
-   */
-  formatDate(dateStr: string): string {
-    try {
-      const date = new Date(dateStr);
-      return date.toLocaleDateString('en-US', {
-        year: 'numeric',
-        month: 'short',
-        day: 'numeric',
+  onLeagueChange(league: League): void {
+    this.searchTerm.set('');
+    this.selectedLeague.set(league);
+  }
+
+  onSearchChange(value: string): void {
+    this.searchTerm.set(value);
+  }
+
+  retryLoad(): void {
+    this.loadMatches(this.selectedLeague().id);
+  }
+
+  private loadMatches(leagueId: string): void {
+    this.isLoading.set(true);
+    this.loadError.set(null);
+
+    this.matchApiService
+      .getRecentMatches$(leagueId)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (matches) => {
+          this.matches.set(matches);
+          this.isLoading.set(false);
+        },
+        error: () => {
+          this.matches.set([]);
+          this.loadError.set('Failed to load matches from TheSportsDB. Please try again.');
+          this.isLoading.set(false);
+        },
       });
-    } catch {
-      return dateStr;
-    }
-  }
-
-  /**
-   * Format time for display
-   */
-  formatTime(timeStr: string | null | undefined): string {
-    return timeStr ?? '--:--';
-  }
-
-  /**
-   * Get score display string
-   */
-  getScore(match: Match): string {
-    if (match.intHomeScore === null || match.intAwayScore === null) {
-      return '--:--';
-    }
-    return `${match.intHomeScore}:${match.intAwayScore}`;
   }
 }

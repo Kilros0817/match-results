@@ -1,0 +1,13 @@
+<label class="search-box">
+  <span class="search-box__label">Search teams</span>
+  <span class="search-box__field">
+    <span class="search-box__icon" aria-hidden="true">⌕</span>
+    <input
+      type="search"
+      [value]="value()"
+      (input)="onInput($event)"
+      placeholder="Search by home or away team..."
+      autocomplete="off"
+    />
+  </span>
+</label>

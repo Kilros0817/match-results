@@ -1,0 +1,32 @@
+<a [routerLink]="['/results', match().idEvent]" class="match-card">
+  <div class="match-card__date">
+    <span aria-hidden="true">▣</span>
+    {{ displayDate() }}
+  </div>
+
+  <div class="match-card__body">
+    <section class="match-card__team" aria-label="Home team">
+      <img class="match-card__team-logo" [src]="homeLogo()" [alt]="match().strHomeTeam + ' logo'" />
+      <strong>{{ match().strHomeTeam }}</strong>
+    </section>
+
+    <div class="match-card__score" aria-label="Final score">
+      {{ score() }}
+    </div>
+
+    <section class="match-card__team" aria-label="Away team">
+      <img class="match-card__team-logo" [src]="awayLogo()" [alt]="match().strAwayTeam + ' logo'" />
+      <strong>{{ match().strAwayTeam }}</strong>
+    </section>
+  </div>
+
+  <footer class="match-card__meta">
+    @if (countryFlag(); as flagUrl) {
+      <img class="match-card__flag" [src]="flagUrl" alt="Country flag" />
+    }
+    <span>{{ match().strLeague }}</span>
+    <span aria-hidden="true">•</span>
+    <span>{{ displayTime() }}</span>
+    <img class="match-card__league-logo" [src]="leagueLogo()" [alt]="match().strLeague + ' logo'" />
+  </footer>
+</a>

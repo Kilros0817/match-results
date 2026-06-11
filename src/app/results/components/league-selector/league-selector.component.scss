@@ -1,0 +1,36 @@
+.league-selector {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.league-selector__button {
+  min-height: 48px;
+  padding: 0 20px;
+  border: 1px solid rgba(148, 163, 184, 0.28);
+  border-radius: 13px;
+  background: rgba(15, 23, 42, 0.7);
+  color: #f8fafc;
+  cursor: pointer;
+  font: inherit;
+  font-size: 15px;
+  font-weight: 700;
+  transition: background-color 0.18s ease, border-color 0.18s ease, transform 0.18s ease;
+
+  &:hover {
+    border-color: rgba(96, 165, 250, 0.7);
+    transform: translateY(-1px);
+  }
+
+  &--active {
+    border-color: rgba(96, 165, 250, 0.95);
+    background: linear-gradient(135deg, #60a5fa, #2563eb);
+    box-shadow: 0 12px 32px rgba(37, 99, 235, 0.25);
+  }
+}
+
+@media (max-width: 640px) {
+  .league-selector__button {
+    width: 100%;
+  }
+}
