@@ -3,12 +3,12 @@
  * Handles all HTTP communication with TheSportsDB API
  */
 
-import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, catchError, map, of } from 'rxjs';
-import { Match, EventsResponse, EventResponse } from '../models/match.model';
+import { Injectable, inject } from '@angular/core';
+import { Observable, map } from 'rxjs';
+import { EventsResponse, Match } from '../models/match.model';
 
-const API_BASE = 'https://www.thesportsdb.com/api/v1/json/123';
+const API_BASE_URL = 'https://www.thesportsdb.com/api/v1/json/3';
 
 @Injectable({
   providedIn: 'root',
@@ -17,36 +17,24 @@ export class MatchApiService {
   private readonly http = inject(HttpClient);
 
   /**
-   * Fetch recent events (matches) for a given league
-   * @param leagueId - TheSportsDB league ID
-   * @returns Observable of Match array
+   * Fetch recent events for a given league.
    */
   getRecentMatches$(leagueId: string): Observable<Match[]> {
-    const url = `${API_BASE}/eventspastleague.php?id=${leagueId}`;
-
-    return this.http.get<EventsResponse>(url).pipe(
-      map((response) => response.results ?? []),
-      catchError((error) => {
-        console.error('Failed to fetch matches:', error);
-        return of([]);
-      }),
-    );
+    return this.http
+      .get<EventsResponse>(`${API_BASE_URL}/eventspastleague.php`, {
+        params: { id: leagueId },
+      })
+      .pipe(map((response) => response.events ?? []));
   }
 
   /**
-   * Fetch a single match by event ID
-   * @param eventId - TheSportsDB event ID
-   * @returns Observable of Match or null if not found
+   * Fetch a single match by event ID.
    */
   getMatch$(eventId: string): Observable<Match | null> {
-    const url = `${API_BASE}/lookupevent.php?id=${eventId}`;
-
-    return this.http.get<EventResponse>(url).pipe(
-      map((response) => response.results?.[0] ?? null),
-      catchError((error) => {
-        console.error('Failed to fetch match:', error);
-        return of(null);
-      }),
-    );
+    return this.http
+      .get<EventsResponse>(`${API_BASE_URL}/lookupevent.php`, {
+        params: { id: eventId },
+      })
+      .pipe(map((response) => response.events?.[0] ?? null));
   }
 }

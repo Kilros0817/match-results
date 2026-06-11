@@ -19,45 +19,45 @@
   }
 
   <!-- Match Details -->
-  @if (!isLoading() && match()) {
+  @if (!isLoading() && match(); as selectedMatch) {
     <div class="match-detail__content">
       <div class="match-info">
-        <h1 class="match-info__title">{{ match()!.strLeague }}</h1>
+        <h1 class="match-info__title">{{ selectedMatch.strLeague }}</h1>
 
         <div class="match-info__date">
-          {{ formatDate(match()!.strDate) }}
+          {{ formatDate(selectedMatch.dateEvent) }}
         </div>
 
         <div class="match-info__matchup">
           <div class="team">
-            <h2 class="team__name">{{ match()!.strHomeTeam }}</h2>
+            <h2 class="team__name">{{ selectedMatch.strHomeTeam }}</h2>
           </div>
 
           <div class="score">
-            <p class="score__value">{{ getScore(match()!) }}</p>
+            <p class="score__value">{{ getScore(selectedMatch) }}</p>
           </div>
 
           <div class="team">
-            <h2 class="team__name">{{ match()!.strAwayTeam }}</h2>
+            <h2 class="team__name">{{ selectedMatch.strAwayTeam }}</h2>
           </div>
         </div>
 
-        @if (match()!.strVenue) {
+        @if (selectedMatch.strVenue) {
           <div class="match-info__venue">
-            <strong>Venue:</strong> {{ match()!.strVenue }}
+            <strong>Venue:</strong> {{ selectedMatch.strVenue }}
           </div>
         }
 
-        @if (match()!.strSeason) {
+        @if (selectedMatch.strSeason) {
           <div class="match-info__season">
-            <strong>Season:</strong> {{ match()!.strSeason }}
+            <strong>Season:</strong> {{ selectedMatch.strSeason }}
           </div>
         }
 
-        @if (match()!.strDescriptionEN) {
+        @if (selectedMatch.strDescriptionEN) {
           <div class="match-info__description">
             <strong>Description:</strong>
-            <p>{{ match()!.strDescriptionEN }}</p>
+            <p>{{ selectedMatch.strDescriptionEN }}</p>
           </div>
         }
       </div>
