@@ -2,6 +2,7 @@
   <div class="match-card__date">
     <span aria-hidden="true">▣</span>
     {{ displayDate() }}
+    <span>{{ displayTime() }}</span>
   </div>
 
   <div class="match-card__body">
@@ -23,7 +24,5 @@
   <footer class="match-card__meta">
     <img class="match-card__league-logo" [src]="leagueLogo()" [alt]="match().strLeague + ' logo'" />
     <span>{{ match().strLeague }}</span>
-    <span aria-hidden="true">•</span>
-    <span>{{ displayTime() }}</span>
   </footer>
 </a>

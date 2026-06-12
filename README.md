@@ -133,3 +133,9 @@ This project strictly follows the team's Angular standards as defined in `DEVELO
 - Service layer completely decoupled from UI
 - Proper error handling for network failures
 - Code is intentionally simple and readable over clever
+
+## API Fallback
+
+The application uses TheSportsDB API as the primary data source.
+
+If TheSportsDB is unavailable during development or review, the app automatically falls back to local JSON files under `public/assets/mock/`. These files use the same top-level `events` response shape as TheSportsDB, so the UI can continue rendering match results without external API availability blocking the task.

@@ -32,6 +32,10 @@ h1 {
   color: #e2e8f0;
   font-size: 20px;
   line-height: 1.5;
+
+  span {
+    font-weight: 700;
+  }
 }
 
 app-league-selector,
@@ -56,8 +60,8 @@ app-search-box {
 
 .results-page__matches {
   display: grid;
+  grid-template-columns: repeat(2, 1fr);
   gap: 26px;
-  max-width: 880px;
   margin-top: 34px;
 }
 
@@ -83,7 +87,7 @@ app-state-message {
   }
 
   .results-page__matches {
-    max-width: none;
+    grid-template-columns: 1fr;
   }
 }
 

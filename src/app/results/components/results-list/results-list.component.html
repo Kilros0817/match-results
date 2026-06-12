@@ -3,8 +3,7 @@
     <p class="results-hero__eyebrow">Football Dashboard</p>
     <h1 id="results-title">Match Results</h1>
     <p class="results-hero__copy">
-      Recent results for {{ selectedLeague().name }}<br />
-      from TheSportsDB.
+      Recent results for <span>{{ selectedLeague().name }}</span><br />
     </p>
   </section>
 
@@ -19,7 +18,7 @@
   <section class="results-page__kpis" aria-label="Match result metrics">
     <app-kpi-tile label="Total matches" [value]="totalMatches()" icon="pitch" />
     <app-kpi-tile label="Total goals" [value]="totalGoals()" icon="ball" />
-    <app-kpi-tile label="Average goals(per match)" [value]="averageGoals()" icon="chart" />
+    <app-kpi-tile label="Average goals" [value]="averageGoals()" icon="chart" />
   </section>
 
   @if (isLoading()) {
