@@ -1,0 +1,109 @@
+.match-detail {
+  width: min(100% - 48px, 900px);
+  margin: 0 auto;
+  padding: 44px 0;
+}
+
+.match-detail__nav {
+  display: flex;
+  margin-bottom: 28px;
+}
+
+.match-detail__back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 46px;
+  padding: 6px 18px 6px 8px;
+  color: #dbeafe;
+  font-size: 15px;
+  font-weight: 800;
+  text-decoration: none;
+  border: 1px solid rgba(96, 165, 250, 0.3);
+  border-radius: 999px;
+  background:
+    linear-gradient(135deg, rgba(30, 64, 175, 0.24), rgba(14, 165, 233, 0.1)),
+    rgba(15, 23, 42, 0.9);
+  box-shadow:
+    0 18px 42px rgba(2, 6, 23, 0.28),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  transition:
+    transform 180ms ease,
+    border-color 180ms ease,
+    box-shadow 180ms ease,
+    color 180ms ease;
+
+  &:hover {
+    color: #ffffff;
+    transform: translateY(-1px);
+    border-color: rgba(96, 165, 250, 0.65);
+    box-shadow:
+      0 22px 52px rgba(2, 6, 23, 0.36),
+      0 0 24px rgba(59, 130, 246, 0.12),
+      inset 0 1px 0 rgba(255, 255, 255, 0.1);
+
+    .match-detail__back-icon {
+      transform: translateX(-3px);
+    }
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+}
+
+.match-detail__back-icon {
+  display: grid;
+  width: 34px;
+  height: 34px;
+  place-items: center;
+  color: #ffffff;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #2563eb, #06b6d4);
+  transition: transform 180ms ease;
+}
+
+.match-detail__back-text {
+  line-height: 1;
+}
+
+.match-detail__loading,
+.match-detail__error {
+  padding: 42px 24px;
+  text-align: center;
+  border: 1px solid rgba(148, 163, 184, 0.18);
+  border-radius: 24px;
+  background: rgba(15, 23, 42, 0.72);
+
+  p {
+    margin: 0;
+    color: #e2e8f0;
+    font-size: 16px;
+  }
+}
+
+.match-detail__error {
+  border-color: rgba(248, 113, 113, 0.28);
+  background: rgba(127, 29, 29, 0.16);
+
+  p {
+    color: #fca5a5;
+  }
+}
+
+.match-detail__content {
+  display: flex;
+  justify-content: center;
+}
+
+@media (max-width: 640px) {
+  .match-detail {
+    width: min(100% - 32px, 900px);
+    padding-top: 28px;
+  }
+
+  .match-detail__back-btn {
+    width: 100%;
+    justify-content: flex-start;
+  }
+}

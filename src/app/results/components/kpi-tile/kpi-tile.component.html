@@ -1,5 +1,5 @@
 <article class="kpi-tile">
-  <div class="kpi-tile__icon" [class]="'kpi-tile__icon kpi-tile__icon--' + icon()">
+  <div class="kpi-tile__icon" [class.kpi-tile__icon--pitch]="icon() === 'pitch'" [class.kpi-tile__icon--ball]="icon() === 'ball'" [class.kpi-tile__icon--chart]="icon() === 'chart'">
     @switch (icon()) {
       @case ('pitch') {
         <span aria-hidden="true">▥</span>

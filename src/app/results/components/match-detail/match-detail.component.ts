@@ -4,7 +4,6 @@
  */
 
 import { ChangeDetectionStrategy, Component, OnInit, computed, inject, signal } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { MatchApiService } from '../../services/match-api.service';
 import { MatchCardComponent } from '../match-card/match-card.component';
@@ -13,7 +12,7 @@ import { Match } from '../../models/match.model';
 @Component({
   selector: 'app-match-detail',
   standalone: true,
-  imports: [CommonModule, RouterLink, MatchCardComponent],
+  imports: [RouterLink, MatchCardComponent],
   templateUrl: './match-detail.component.html',
   styleUrl: './match-detail.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
