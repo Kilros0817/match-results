@@ -1,5 +1,5 @@
 .results-page {
-  width: min(100% - 48px, 1320px);
+  width: min(100% - 48px, var(--panel-width));
   margin: 0 auto;
   padding: 52px 0 36px;
 }
@@ -10,7 +10,7 @@
 
 .results-hero__eyebrow {
   margin: 0 0 18px;
-  color: #60a5fa;
+  color: var(--color-primary-light);
   font-size: 15px;
   font-weight: 900;
   letter-spacing: 0.14em;
@@ -19,7 +19,7 @@
 
 h1 {
   margin: 0;
-  color: #ffffff;
+  color: var(--color-text-strong)fff;
   font-size: clamp(54px, 7vw, 72px);
   font-weight: 900;
   line-height: 0.96;
@@ -29,7 +29,7 @@ h1 {
 .results-hero__copy {
   max-width: 520px;
   margin: 24px 0 0;
-  color: #e2e8f0;
+  color: var(--color-text-soft);
   font-size: 20px;
   line-height: 1.5;
 
@@ -67,12 +67,12 @@ app-search-box {
 
 .results-page__footer {
   margin-top: 36px;
-  color: #94a3b8;
+  color: var(--color-muted-strong);
   font-size: 16px;
   text-align: center;
 
   span {
-    color: #60a5fa;
+    color: var(--color-primary-light);
   }
 }
 
@@ -93,7 +93,7 @@ app-state-message {
 
 @media (max-width: 640px) {
   .results-page {
-    width: min(100% - 32px, 1320px);
+    width: min(100% - 32px, var(--panel-width));
     padding-top: 34px;
   }
 

@@ -4,10 +4,11 @@
   gap: 24px;
   min-height: 128px;
   padding: 28px;
-  border: 1px solid rgba(148, 163, 184, 0.18);
-  border-radius: 18px;
-  background: linear-gradient(135deg, rgba(30, 41, 59, 0.78), rgba(15, 23, 42, 0.62));
-  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  border: 1px solid rgb(var(--color-border-rgb) / 18%);
+  border-radius: var(--radius-panel);
+  backdrop-filter: var(--backdrop-blur);
+  background: linear-gradient(135deg, rgb(var(--color-surface-elevated-rgb) / 78%), rgb(var(--color-surface-rgb) / 62%));
+  box-shadow: var(--shadow-card);
 }
 
 .kpi-tile__icon {
@@ -17,27 +18,27 @@
   flex: 0 0 auto;
   place-items: center;
   border-radius: 22px;
-  color: #93c5fd;
+  color: var(--color-primary-soft);
   font-size: 34px;
   font-weight: 900;
 
   &--pitch {
-    background: radial-gradient(circle at 30% 20%, #2563eb, #10285f);
+    background: radial-gradient(circle at 30% 20%, var(--color-primary-deep), var(--color-primary-navy));
   }
 
   &--ball {
-    background: radial-gradient(circle at 30% 20%, #22c55e, #0b3b2f);
+    background: radial-gradient(circle at 30% 20%, var(--color-success), var(--color-success-deep));
   }
 
   &--chart {
-    background: radial-gradient(circle at 30% 20%, #6d28d9, #22145d);
+    background: radial-gradient(circle at 30% 20%, var(--color-accent-purple), var(--color-accent-purple-deep));
   }
 }
 
 .kpi-tile__label,
 .kpi-tile__helper {
   margin: 0;
-  color: #cbd5e1;
+  color: var(--color-muted);
   font-size: 16px;
   line-height: 1.5;
 }
@@ -45,7 +46,7 @@
 .kpi-tile__value {
   display: block;
   margin-top: 8px;
-  color: #f8fafc;
+  color: var(--color-text);
   font-size: clamp(34px, 4vw, 46px);
   line-height: 1;
   letter-spacing: -0.05em;
