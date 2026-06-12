@@ -1,60 +1,20 @@
 # Match Results
 
-A production-quality Angular 21 feature for displaying football match results with league selection, search/filter capabilities, and detailed match views.
+A production-quality Angular 21 application for displaying football match results with league selection, debounced search, KPI metrics, and detailed match views.
+
+**Live Demo:** https://match-results.vercel.app/  
 
 ## Stack
 
-- **Angular 21** (standalone components, no NgModules)
+- **Angular 21** (standalone components, strict mode)
 - **TypeScript** with strict mode enabled
-- **RxJS** for asynchronous operations
-- **Signals** for reactive state management
-- **TheSportsDB API** for match data (free, no authentication required)
+- **RxJS** with debouncing operators for search
+- **Signals** for reactive state management (`signal`, `computed`, `effect`)
+- **Vitest** for unit testing
+- **SCSS** with CSS variables for theming
+- **TheSportsDB API** for match data (free, no authentication)
 
-## Architecture
-
-### Folder Structure
-
-```
-src/app/results/
-├── components/
-│   ├── results-list/          # List page with league selector
-│   └── match-detail/          # Detail page for single match
-├── services/
-│   └── match-api.service.ts   # Typed HTTP service for API calls
-├── models/
-│   └── match.model.ts         # TypeScript interfaces for API responses
-├── constants/
-│   └── league.constants.ts    # League configurations
-└── results.routes.ts          # Lazy-loaded feature routes
-```
-
-### Key Features (Day 1 - MVP)
-
-✅ **Results List Page** (`/results`)
-- League selector (5 major European leagues)
-- Display recent matches with home team, away team, score, and date
-- Loading, error, and empty states
-- Responsive grid layout
-
-✅ **Match Detail Page** (`/results/:id`)
-- Full match information from API
-- Venue and season details
-- Back navigation to results list
-
-✅ **Typed HTTP Service**
-- `MatchApiService` handles all API communication
-- Strongly typed request/response interfaces
-- Error handling with graceful fallbacks
-
-✅ **Code Quality**
-- Angular 21 standalone components with `OnPush` detection strategy
-- Signals for state management (`signal()`, `computed()`)
-- New control flow syntax (`@if`, `@for`)
-- `inject()` for dependency injection
-- ESLint configuration - all files pass linting
-- Conventional Commits with logical separation
-
-## Getting Started
+## Quick Start
 
 ### Prerequisites
 - Node.js 18+ with npm
@@ -65,77 +25,124 @@ src/app/results/
 # Install dependencies
 npm install
 
-# Start development server (runs on http://localhost:4200)
+# Start development server (http://localhost:4200)
 npm start
-```
 
-The app will automatically reload when you modify source files.
+# Run tests
+npm test
 
-### Building
+# Check linting
+npm run lint
 
-```bash
 # Build for production
 npm run build
 ```
 
-Output is in `dist/match-results/`
+## Architecture
 
-### Linting
-
-```bash
-# Check code quality
-ng lint
+### Folder Structure
+```
+src/app/results/
+├── components/
+│   ├── results-list/          # Results list page with KPI tiles
+│   ├── match-detail/          # Match detail page
+│   ├── match-card/            # Reusable match card component
+│   ├── kpi-tile/              # KPI metric tiles
+│   ├── search-box/            # Debounced search input
+│   ├── league-selector/       # League dropdown
+│   └── state-message/         # Loading/error/empty states
+├── services/
+│   ├── match-api.service.ts   # Typed HTTP service
+│   └── results-store.service.ts # State management
+├── models/
+│   └── match.model.ts         # TypeScript interfaces
+├── constants/
+│   └── league.constants.ts    # League configurations
+└── results.routes.ts          # Lazy-loaded routes
 ```
 
-## Developer Guide Compliance
+## Features
 
-This project strictly follows the team's Angular standards as defined in `DEVELOPER_GUIDE.md`:
+✅ **Results List Page** (`/results`)
+- League selector (6 major European leagues: Premier League, Bundesliga, Serie A, Ligue 1, La Liga, Belgian Pro League)
+- Search with 300ms debounce for real-time filtering by team name
+- KPI tiles showing: total matches, total goals, average goals per match
+- Recent match results with score, date, and team information
+- Responsive 2-column grid layout with smooth animations
+- Loading, error, and empty states
 
-- ✅ Standalone components only (no `NgModules`)
-- ✅ `ChangeDetectionStrategy.OnPush` on all components
-- ✅ Signals for state management
-- ✅ New control flow syntax (`@if`, `@for`, `@switch`)
-- ✅ `inject()` for dependency injection
-- ✅ HTTP in dedicated service with typed interfaces
-- ✅ Lazy-loaded standalone routes
-- ✅ Strict TypeScript (no `any`, no non-null `!` operator)
-- ✅ Clean lint with ESLint
-- ✅ Conventional Commits
+✅ **Match Detail Page** (`/results/:id`)
+- Comprehensive match information: teams, score, venue, season
+- Multiple detail sections: overview, schedule, venue & attendance, teams
+- Media gallery with available match photos/banners
+- External links to related resources
+
+✅ **Type Safety & State**
+- Fully typed HTTP service with no `any` types
+- Signals-based state management with reactive updates
+- Computed signals for KPI calculations
+- Debounced search handling at component level
+
+✅ **Testing**
+- 14 unit tests for KPI computations
+- Tests cover: empty state, filtering, null handling, edge cases
+- Tests verify all signals update correctly
 
 ## Design Decisions & Trade-offs
 
-### Day 1 Focus
-- Built minimal viable product focusing on core functionality
-- Placeholder styling (clean and responsive, not styled for beauty)
-- Components are presentational and reusable
+### No API Caching
+- **Decision:** Fresh API call on each league change
+- **Benefit:** Always shows current data, no staleness issues
+- **Trade-off:** More API calls but within free tier limits
 
-### API Error Handling
-- If TheSportsDB API is down, service gracefully returns empty arrays
-- Users see "No matches found" or error messages
-- Retry buttons provided in error states
+### Styling Approach
+- **Decision:** BEM methodology with CSS variables for theming
+- **Benefit:** Maintainable, scalable styling
+- **Trade-off:** Slightly larger stylesheet (~5KB per detail view)
 
-### Data Flow
-- Component subscribes to `Observable` from service
-- No caching implemented yet (Day 1 scope)
-- Each league change triggers fresh API call
+## Testing
 
-## What's Next (Day 2-5)
+```bash
+# Run unit tests
+npm test
 
-- **Day 2**: Component breakdown (KPI tiles, match card component), loading skeletons
-- **Day 3**: Search/filter with `computed()` KPIs, detail page polish
-- **Day 4**: Responsive styling, performance optimization, README finalization
-- **Day 5**: Stretch goals (debounced search, URL persistence, unit tests)
+# Run tests with coverage
+npm test -- --coverage
 
-## Notes for Reviewers
+# Run specific test file
+npm test -- results-list.component.spec.ts
+```
 
-- Git history reflects small logical commits (not one big "final" commit)
-- All components follow the BEM naming convention for CSS
-- Service layer completely decoupled from UI
-- Proper error handling for network failures
-- Code is intentionally simple and readable over clever
+**Test Coverage:**
+- 14 unit tests for KPI computations
+- Tests verify: totalMatches, totalGoals, averageGoals signals
+- Tests cover: empty state, filtering, null handling, integration
 
-## API Fallback
+## Deployment
 
-The application uses TheSportsDB API as the primary data source.
+The application is deployed to **Vercel** with continuous integration:
 
-If TheSportsDB is unavailable during development or review, the app automatically falls back to local JSON files under `public/assets/mock/`. These files use the same top-level `events` response shape as TheSportsDB, so the UI can continue rendering match results without external API availability blocking the task.
+```bash
+# Manual build
+npm run build
+```
+
+## API Notes
+
+- Uses **TheSportsDB** free API (test key: `3`)
+- No authentication required
+
+### Available Leagues
+- English Premier League (ID: 4328)
+- German Bundesliga (ID: 4331) - Default
+- Italian Serie A (ID: 4332)
+- French Ligue 1 (ID: 4334)
+- Spanish La Liga (ID: 4335)
+- Belgian Pro League (ID: 4338)
+
+## Code Quality
+
+- **Linting:** `npm run lint` → All files pass ESLint
+- **Build:** `npm run build` → Production build with no errors/warnings
+- **Tests:** `npm test` → 14 tests passing
+- **TypeScript:** Strict mode enabled, no `any` types
