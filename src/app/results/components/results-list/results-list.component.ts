@@ -5,9 +5,11 @@
 
 import { ChangeDetectionStrategy, Component, DestroyRef, computed, effect, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { Subject, debounceTime } from 'rxjs';
 import { MatchApiService } from '../../services/match-api.service';
+import { ResultsStoreService } from '../../services/results-store.service';
 import { League, Match } from '../../models/match.model';
-import { DEFAULT_LEAGUE, LEAGUES } from '../../constants/league.constants';
+import { LEAGUES } from '../../constants/league.constants';
 import { KpiTileComponent } from '../kpi-tile/kpi-tile.component';
 import { LeagueSelectorComponent } from '../league-selector/league-selector.component';
 import { MatchCardComponent } from '../match-card/match-card.component';
@@ -30,14 +32,30 @@ import { StateMessageComponent } from '../state-message/state-message.component'
 })
 export class ResultsListComponent {
   private readonly matchApiService = inject(MatchApiService);
+  private readonly store = inject(ResultsStoreService);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly searchSubject = new Subject<string>();
 
   readonly leagues = signal<League[]>(LEAGUES);
-  readonly selectedLeague = signal<League>(DEFAULT_LEAGUE);
+  readonly selectedLeague = this.store.selectedLeague;
   readonly searchTerm = signal('');
   readonly matches = signal<Match[]>([]);
   readonly isLoading = signal(false);
   readonly loadError = signal<string | null>(null);
+
+  constructor() {
+    // Set up debounced search with 300ms delay
+    this.searchSubject
+      .pipe(debounceTime(300), takeUntilDestroyed(this.destroyRef))
+      .subscribe((term) => {
+        this.searchTerm.set(term);
+      });
+
+    effect(() => {
+      const leagueId = this.selectedLeague().id;
+      this.loadMatches(leagueId);
+    });
+  }
 
   readonly filteredMatches = computed(() => {
     const term = this.searchTerm().trim().toLowerCase();
@@ -75,20 +93,14 @@ export class ResultsListComponent {
     return (this.totalGoals() / matchCount).toFixed(1);
   });
 
-  constructor() {
-    effect(() => {
-      const leagueId = this.selectedLeague().id;
-      this.loadMatches(leagueId);
-    });
-  }
-
   onLeagueChange(league: League): void {
     this.searchTerm.set('');
-    this.selectedLeague.set(league);
+    this.searchSubject.next('');
+    this.store.setSelectedLeague(league);
   }
 
   onSearchChange(value: string): void {
-    this.searchTerm.set(value);
+    this.searchSubject.next(value);
   }
 
   retryLoad(): void {
