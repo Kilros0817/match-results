@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { Match } from '../../models/match.model';
+import { OverflowSlideDirective } from './overflow-slide.directive';
 
 const TEAM_FALLBACK_LOGO = '/assets/logos/team-fallback.svg';
 const LEAGUE_FALLBACK_LOGO = '/assets/logos/league-fallback.svg';
@@ -8,7 +9,7 @@ const LEAGUE_FALLBACK_LOGO = '/assets/logos/league-fallback.svg';
 @Component({
   selector: 'app-match-card',
   standalone: true,
-  imports: [RouterLink],
+  imports: [RouterLink, OverflowSlideDirective],
   templateUrl: './match-card.component.html',
   styleUrl: './match-card.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

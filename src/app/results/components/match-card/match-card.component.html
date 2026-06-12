@@ -8,7 +8,9 @@
   <div class="match-card__body">
     <section class="match-card__team" aria-label="Home team">
       <img class="match-card__team-logo" [src]="homeLogo()" [alt]="match().strHomeTeam + ' logo'" />
-      <strong>{{ match().strHomeTeam }}</strong>
+      <strong class="match-card__team-name" appOverflowSlide [title]="match().strHomeTeam">
+        <span class="match-card__team-name-text">{{ match().strHomeTeam }}</span>
+      </strong>
     </section>
 
     <div class="match-card__score" aria-label="Final score">
@@ -17,7 +19,9 @@
 
     <section class="match-card__team" aria-label="Away team">
       <img class="match-card__team-logo" [src]="awayLogo()" [alt]="match().strAwayTeam + ' logo'" />
-      <strong>{{ match().strAwayTeam }}</strong>
+      <strong class="match-card__team-name" appOverflowSlide [title]="match().strAwayTeam">
+        <span class="match-card__team-name-text">{{ match().strAwayTeam }}</span>
+      </strong>
     </section>
   </div>
 
