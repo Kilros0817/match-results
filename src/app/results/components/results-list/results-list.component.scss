@@ -47,7 +47,7 @@ app-league-selector {
   margin-top: 18px;
 }
 
-app-search-box {
+.results-page__search-row {
   margin-top: 38px;
 }
 
@@ -56,6 +56,50 @@ app-search-box {
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 26px;
   margin-top: 32px;
+}
+
+.results-page__sort-controls {
+  display: flex;
+  justify-content: flex-start;
+  margin-top: 24px;
+}
+
+.results-page__sort-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 14px;
+  color: var(--color-text-secondary);
+  font-size: 13px;
+  font-weight: 600;
+  background: transparent;
+  border: 1px solid rgb(var(--color-border-rgb) / 32%);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+  flex-shrink: 0;
+
+  &:hover {
+    color: var(--color-primary-light);
+    border-color: rgb(var(--color-primary-light-rgb) / 50%);
+    background: rgb(var(--color-primary-rgb) / 8%);
+  }
+
+  &:active {
+    transform: scale(0.98);
+  }
+
+  &--active {
+    color: var(--color-primary-light);
+    border-color: rgb(var(--color-primary-light-rgb) / 60%);
+    background: rgb(var(--color-primary-rgb) / 16%);
+  }
+}
+
+.results-page__sort-indicator {
+  font-size: 11px;
+  opacity: 0.7;
 }
 
 .results-page__matches {

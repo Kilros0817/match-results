@@ -13,13 +13,30 @@
     (leagueSelected)="onLeagueChange($event)"
   />
 
-  <app-search-box [value]="searchTerm()" (valueChanged)="onSearchChange($event)" />
+  <div class="results-page__search-row">
+    <app-search-box [value]="searchTerm()" (valueChanged)="onSearchChange($event)" />
+  </div>
 
   <section class="results-page__kpis" aria-label="Match result metrics">
     <app-kpi-tile label="Total matches" [value]="totalMatches()" icon="pitch" />
     <app-kpi-tile label="Total goals" [value]="totalGoals()" icon="ball" />
     <app-kpi-tile label="Average goals" [value]="averageGoals()" icon="chart" />
   </section>
+
+  <div class="results-page__sort-controls">
+    <button
+      class="results-page__sort-btn"
+      [class.results-page__sort-btn--active]="isSortedByGoals()"
+      (click)="toggleGoalsSort()"
+      aria-label="Toggle sort by goals per match"
+    >
+      <span aria-hidden="true">⚽</span>
+      Sort By Goals
+      @if (isSortedByGoals()) {
+        <span class="results-page__sort-indicator" aria-hidden="true">↓</span>
+      }
+    </button>
+  </div>
 
   @if (isLoading()) {
     <app-state-message kind="loading" title="Loading matches" message="Fetching the latest match results..." />
@@ -39,7 +56,7 @@
     />
   } @else {
     <section class="results-page__matches" aria-label="Recent matches">
-      @for (match of filteredMatches(); track match.idEvent) {
+      @for (match of displayMatches(); track match.idEvent) {
         <app-match-card [match]="match" />
       }
     </section>

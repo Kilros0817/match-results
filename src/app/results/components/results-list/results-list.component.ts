@@ -40,6 +40,7 @@ export class ResultsListComponent {
   readonly matches = signal<Match[]>([]);
   readonly isLoading = signal(false);
   readonly loadError = signal<string | null>(null);
+  readonly isSortedByGoals = signal(false);
 
   constructor() {
     effect(() => {
@@ -61,6 +62,18 @@ export class ResultsListComponent {
 
       return homeTeam.includes(term) || awayTeam.includes(term);
     });
+  });
+
+  readonly displayMatches = computed(() => {
+    const matches = this.filteredMatches();
+
+    if (!this.isSortedByGoals()) {
+      return matches;
+    }
+
+    return [...matches].sort(
+      (a, b) => this.getMatchGoals(b) - this.getMatchGoals(a),
+    );
   });
 
   readonly totalMatches = computed(() => this.filteredMatches().length);
@@ -93,8 +106,18 @@ export class ResultsListComponent {
     this.searchTerm.set(value);
   }
 
+  toggleGoalsSort(): void {
+    this.isSortedByGoals.update((isSorted) => !isSorted);
+  }
+
   retryLoad(): void {
     this.loadMatches(this.selectedLeague().id);
+  }
+
+  private getMatchGoals(match: Match): number {
+    const homeGoals = Number(match.intHomeScore ?? 0);
+    const awayGoals = Number(match.intAwayScore ?? 0);
+    return homeGoals + awayGoals;
   }
 
   private loadMatches(leagueId: string): void {
