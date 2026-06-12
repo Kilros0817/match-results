@@ -1,27 +1,184 @@
 <main class="match-detail">
-  <!-- Back Link -->
-  <div class="match-detail__header">
-    <a routerLink="/results" class="match-detail__back-btn">← Back to Results</a>
-  </div>
+  <a routerLink="/results" class="match-detail__back-btn" aria-label="Back to match results">
+    <span aria-hidden="true">←</span>
+    <span>Back to results</span>
+  </a>
 
-  <!-- Loading State -->
   @if (isLoading()) {
-    <div class="match-detail__loading">
+    <section class="match-detail__state" aria-live="polite">
+      <div class="match-detail__spinner" aria-hidden="true"></div>
       <p>Loading match details...</p>
-    </div>
-  }
-
-  <!-- Error State -->
-  @if (loadError() && !isLoading()) {
-    <div class="match-detail__error">
-      <p>{{ loadError() }}</p>
-    </div>
-  }
-
-  <!-- Match Card -->
-  @if (!isLoading() && displayMatch()) {
-    <section class="match-detail__content">
-      <app-match-card [match]="displayMatch()!" />
     </section>
+  } @else if (loadError()) {
+    <section class="match-detail__state match-detail__state--error" aria-live="assertive">
+      <p>{{ loadError() }}</p>
+    </section>
+  } @else if (match(); as selectedMatch) {
+    <section class="match-detail__hero">
+      @if (heroImage(); as imageUrl) {
+        <img class="match-detail__hero-image" [src]="imageUrl" [alt]="selectedMatch.strEvent" />
+      }
+
+      <div class="match-detail__hero-content">
+        <div class="match-detail__league-row">
+          @if (selectedMatch.strLeagueBadge) {
+            <img
+              class="match-detail__league-badge"
+              [src]="selectedMatch.strLeagueBadge"
+              [alt]="selectedMatch.strLeague + ' badge'"
+            />
+          }
+          <div>
+            <p class="match-detail__eyebrow">{{ selectedMatch.strLeague }}</p>
+            @if (selectedMatch.strSeason) {
+              <p class="match-detail__season">Season {{ selectedMatch.strSeason }}</p>
+            }
+          </div>
+        </div>
+
+        <div class="match-detail__scoreboard">
+          <article class="match-detail__team">
+            <img
+              class="match-detail__team-badge"
+              [src]="selectedMatch.strHomeTeamBadge || '/assets/logos/team-fallback.svg'"
+              [alt]="selectedMatch.strHomeTeam + ' badge'"
+            />
+            <h1>{{ selectedMatch.strHomeTeam }}</h1>
+          </article>
+
+          <div class="match-detail__score">
+            <strong>{{ scoreLabel() }}</strong>
+            <span>{{ matchStatus() }}</span>
+          </div>
+
+          <article class="match-detail__team">
+            <img
+              class="match-detail__team-badge"
+              [src]="selectedMatch.strAwayTeamBadge || '/assets/logos/team-fallback.svg'"
+              [alt]="selectedMatch.strAwayTeam + ' badge'"
+            />
+            <h1>{{ selectedMatch.strAwayTeam }}</h1>
+          </article>
+        </div>
+
+        <div class="match-detail__summary-strip">
+          <span>{{ selectedMatch.dateEvent }}</span>
+          @if (selectedMatch.strTime) {
+            <span>{{ selectedMatch.strTime }}</span>
+          }
+          @if (selectedMatch.strVenue) {
+            <span>{{ selectedMatch.strVenue }}</span>
+          }
+        </div>
+      </div>
+    </section>
+
+    <section class="match-detail__grid" aria-label="Match detail sections">
+      <article class="match-detail__panel">
+        <h2>Match overview</h2>
+        <dl>
+          @for (item of overviewItems(); track item.label) {
+            <div>
+              <dt>{{ item.label }}</dt>
+              <dd>{{ item.value }}</dd>
+            </div>
+          }
+        </dl>
+      </article>
+
+      <article class="match-detail__panel">
+        <h2>Schedule</h2>
+        <dl>
+          @for (item of scheduleItems(); track item.label) {
+            <div>
+              <dt>{{ item.label }}</dt>
+              <dd>{{ item.value }}</dd>
+            </div>
+          }
+        </dl>
+      </article>
+
+      <article class="match-detail__panel">
+        <h2>Venue & attendance</h2>
+        @if (venueItems().length > 0) {
+          <dl>
+            @for (item of venueItems(); track item.label) {
+              <div>
+                <dt>{{ item.label }}</dt>
+                <dd>{{ item.value }}</dd>
+              </div>
+            }
+          </dl>
+        } @else {
+          <p class="match-detail__muted">Venue information is not available for this match.</p>
+        }
+      </article>
+
+      <article class="match-detail__panel">
+        <h2>Teams</h2>
+        <dl>
+          <div>
+            <dt>Home team ID</dt>
+            <dd>{{ selectedMatch.idHomeTeam }}</dd>
+          </div>
+          <div>
+            <dt>Away team ID</dt>
+            <dd>{{ selectedMatch.idAwayTeam }}</dd>
+          </div>
+          @if (selectedMatch.strEventAlternate) {
+            <div>
+              <dt>Alternate event name</dt>
+              <dd>{{ selectedMatch.strEventAlternate }}</dd>
+            </div>
+          }
+        </dl>
+      </article>
+    </section>
+
+    @if (selectedMatch.strDescriptionEN || selectedMatch.strResult) {
+      <section class="match-detail__panel match-detail__panel--wide">
+        <h2>Match notes</h2>
+        @if (selectedMatch.strResult) {
+          <p>{{ selectedMatch.strResult }}</p>
+        }
+        @if (selectedMatch.strDescriptionEN) {
+          <p>{{ selectedMatch.strDescriptionEN }}</p>
+        }
+      </section>
+    }
+
+    @if (hasMedia()) {
+      <section class="match-detail__panel match-detail__panel--wide">
+        <h2>Media</h2>
+        <div class="match-detail__media-grid">
+          @if (selectedMatch.strPoster) {
+            <img [src]="selectedMatch.strPoster" [alt]="selectedMatch.strEvent + ' poster'" />
+          }
+          @if (selectedMatch.strSquare) {
+            <img [src]="selectedMatch.strSquare" [alt]="selectedMatch.strEvent + ' square media'" />
+          }
+          @if (selectedMatch.strFanart) {
+            <img [src]="selectedMatch.strFanart" [alt]="selectedMatch.strEvent + ' fanart'" />
+          }
+          @if (selectedMatch.strThumb) {
+            <img [src]="selectedMatch.strThumb" [alt]="selectedMatch.strEvent + ' thumbnail'" />
+          }
+        </div>
+      </section>
+    }
+
+    @if (mediaItems().length > 0) {
+      <section class="match-detail__panel match-detail__panel--wide">
+        <h2>External links</h2>
+        <div class="match-detail__link-list">
+          @for (item of mediaItems(); track item.label) {
+            <a [href]="item.value" target="_blank" rel="noreferrer">
+              {{ item.label }}
+              <span aria-hidden="true">↗</span>
+            </a>
+          }
+        </div>
+      </section>
+    }
   }
 </main>

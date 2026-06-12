@@ -8,11 +8,15 @@ export const resultsRoutes: Routes = [
   {
     path: '',
     loadComponent: () =>
-      import('./results-list/results-list.component').then((m) => m.ResultsListPage),
+      import('./components/results-list/results-list.component').then(
+        (m) => m.ResultsListComponent,
+      ),
   },
   {
     path: ':id',
     loadComponent: () =>
-      import('./match-detail/match-detail.component').then((m) => m.MatchDetailPage),
+      import('./components/match-detail/match-detail.component').then(
+        (m) => m.MatchDetailComponent,
+      ),
   },
 ];

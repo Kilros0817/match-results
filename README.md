@@ -16,16 +16,11 @@ A production-quality Angular 21 feature for displaying football match results wi
 
 ```
 src/app/results/
-├── results-list/              # Routed list page
-├── match-detail/              # Routed detail page
 ├── components/
-│   ├── kpi-tile/              # Reusable metric tile
-│   ├── league-selector/       # Presentational league selector
-│   ├── match-card/            # Presentational match card
-│   ├── search-box/            # Presentational search input
-│   └── state-message/         # Loading, empty, and error states
+│   ├── results-list/          # List page with league selector
+│   └── match-detail/          # Detail page for single match
 ├── services/
-│   └── match-api.service.ts   # Typed HTTP service with JSON fallback
+│   └── match-api.service.ts   # Typed HTTP service for API calls
 ├── models/
 │   └── match.model.ts         # TypeScript interfaces for API responses
 ├── constants/
@@ -33,14 +28,11 @@ src/app/results/
 └── results.routes.ts          # Lazy-loaded feature routes
 ```
 
-### Key Features
+### Key Features (Day 1 - MVP)
 
 ✅ **Results List Page** (`/results`)
-- League selector (major European leagues)
-- Display recent matches with team/league logos, scores, and dates
-- Debounced team-name search
-- Computed KPI tiles for total matches, total goals, and average goals
-- Goals-per-match sort toggle
+- League selector (5 major European leagues)
+- Display recent matches with home team, away team, score, and date
 - Loading, error, and empty states
 - Responsive grid layout
 
@@ -112,22 +104,27 @@ This project strictly follows the team's Angular standards as defined in `DEVELO
 
 ## Design Decisions & Trade-offs
 
-### Senior Code Quality Focus
-- Routed feature components live directly under the feature folder, matching `DEVELOPER_GUIDE.md`
-- KPI values are derived from source signals with `computed()`
-- Debounced search keeps UI state predictable without unnecessary recalculation
-- API access stays isolated in a typed service with JSON fallback data
+### Day 1 Focus
+- Built minimal viable product focusing on core functionality
+- Placeholder styling (clean and responsive, not styled for beauty)
+- Components are presentational and reusable
 
 ### API Error Handling
-- If TheSportsDB API is down, the service falls back to local JSON under `public/assets/mock/`
-- Users can still view match results during external API outages
-- Retry buttons are provided for unrecoverable error states
+- If TheSportsDB API is down, service gracefully returns empty arrays
+- Users see "No matches found" or error messages
+- Retry buttons provided in error states
 
 ### Data Flow
-- League changes trigger a fresh typed HTTP request through `MatchApiService`
-- Component state is stored with signals
-- Filtered matches, visible matches, and KPIs are derived with `computed()`
+- Component subscribes to `Observable` from service
+- No caching implemented yet (Day 1 scope)
+- Each league change triggers fresh API call
 
+## What's Next (Day 2-5)
+
+- **Day 2**: Component breakdown (KPI tiles, match card component), loading skeletons
+- **Day 3**: Search/filter with `computed()` KPIs, detail page polish
+- **Day 4**: Responsive styling, performance optimization, README finalization
+- **Day 5**: Stretch goals (debounced search, URL persistence, unit tests)
 
 ## Notes for Reviewers
 
