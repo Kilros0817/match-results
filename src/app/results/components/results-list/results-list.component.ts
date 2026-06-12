@@ -5,7 +5,6 @@
 
 import { ChangeDetectionStrategy, Component, DestroyRef, computed, effect, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { Subject, debounceTime } from 'rxjs';
 import { MatchApiService } from '../../services/match-api.service';
 import { ResultsStoreService } from '../../services/results-store.service';
 import { League, Match } from '../../models/match.model';
@@ -34,7 +33,6 @@ export class ResultsListComponent {
   private readonly matchApiService = inject(MatchApiService);
   private readonly store = inject(ResultsStoreService);
   private readonly destroyRef = inject(DestroyRef);
-  private readonly searchSubject = new Subject<string>();
 
   readonly leagues = signal<League[]>(LEAGUES);
   readonly selectedLeague = this.store.selectedLeague;
@@ -44,13 +42,6 @@ export class ResultsListComponent {
   readonly loadError = signal<string | null>(null);
 
   constructor() {
-    // Set up debounced search with 300ms delay
-    this.searchSubject
-      .pipe(debounceTime(300), takeUntilDestroyed(this.destroyRef))
-      .subscribe((term) => {
-        this.searchTerm.set(term);
-      });
-
     effect(() => {
       const leagueId = this.selectedLeague().id;
       this.loadMatches(leagueId);
@@ -95,12 +86,11 @@ export class ResultsListComponent {
 
   onLeagueChange(league: League): void {
     this.searchTerm.set('');
-    this.searchSubject.next('');
     this.store.setSelectedLeague(league);
   }
 
   onSearchChange(value: string): void {
-    this.searchSubject.next(value);
+    this.searchTerm.set(value);
   }
 
   retryLoad(): void {

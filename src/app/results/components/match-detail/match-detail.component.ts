@@ -3,7 +3,6 @@
  * Displays a full event view for a single match.
  */
 
-import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, DestroyRef, OnInit, computed, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, RouterLink } from '@angular/router';
@@ -18,7 +17,7 @@ interface DetailItem {
 @Component({
   selector: 'app-match-detail',
   standalone: true,
-  imports: [CommonModule, RouterLink],
+  imports: [RouterLink],
   templateUrl: './match-detail.component.html',
   styleUrl: './match-detail.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

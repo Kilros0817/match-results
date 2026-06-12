@@ -14,8 +14,4 @@ export class ResultsStoreService {
   setSelectedLeague(league: League): void {
     this.selectedLeague.set(league);
   }
-
-  getSelectedLeague(): League {
-    return this.selectedLeague();
-  }
 }
